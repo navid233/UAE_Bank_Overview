@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAE Banking Sector Overview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            max-height: 60vh;
+        }
+        .chart-container-tall {
+            position: relative;
+            width: 100%;
+            height: 550px;
+            max-height: 70vh;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-[#00487C] text-white p-8 text-center shadow-lg">
+        <h1 class="text-4xl md:text-5xl font-bold">UAE Banking Sector: A Financial Snapshot</h1>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold text-[#00487C] mb-4">Sector Titans: Scale & Size</h2>
+            <p class="text-gray-600 mb-6">Market capitalization reflects investor valuation, while total assets represent the operational scale. FAB and Emirates NBD dominate both metrics, highlighting their leadership positions in the UAE financial landscape.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-center mb-2 text-[#046E8F]">Market Capitalization (USD Billions)</h3>
+                    <div class="chart-container-tall">
+                        <canvas id="marketCapChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-center mb-2 text-[#046E8F]">Total Assets (USD Billions)</h3>
+                    <div class="chart-container-tall">
+                        <canvas id="totalAssetsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold text-[#00487C] mb-4">Investor Valuation & Returns</h2>
+            <p class="text-gray-600 mb-6">Price-to-Book (P/B) ratio indicates how the market values a bank against its net asset value, while dividend yield shows the annual return to shareholders. These charts provide a comparative look at investor sentiment and direct returns.</p>
+             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                 <div>
+                    <h3 class="text-xl font-semibold text-center mb-2 text-[#046E8F]">Price / Book Ratio (P/BV)</h3>
+                    <div class="chart-container">
+                        <canvas id="pbvChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                     <h3 class="text-xl font-semibold text-center mb-2 text-[#046E8F]">Dividend Yield (%)</h3>
+                    <div class="chart-container">
+                        <canvas id="divYieldChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold text-[#00487C] mb-4">3-Year Growth Performance (CAGR)</h2>
+            <p class="text-gray-600 mb-6">Consistent growth is a key indicator of a bank's health and strategic success. The following charts break down the 3-year Compound Annual Growth Rate (CAGR) for Net Interest Income, Net Profit, and Total Assets, allowing for a direct comparison of long-term performance across the sector.</p>
+             <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-center mb-2 text-[#046E8F]">Net Interest Income Growth</h3>
+                     <div class="chart-container">
+                        <canvas id="niiGrowthChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-center mb-2 text-[#046E8F]">Net Profit Growth</h3>
+                     <div class="chart-container">
+                        <canvas id="netProfitGrowthChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-center mb-2 text-[#046E8F]">Total Assets Growth</h3>
+                     <div class="chart-container">
+                        <canvas id="assetsGrowthChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-3xl font-bold text-center text-[#00487C] mb-8">In-Depth Bank Profiles</h2>
+            <div id="bank-profiles" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="text-center p-6 bg-[#00487C] text-white mt-8">
+        <p>Infographic by Canvas Infographics. Data as of Q2 2025 for illustrative purposes.</p>
+    </footer>
+
+    <script>
+        const bankData = [
+            { name: "First Abu Dhabi Bank (FAB)", mkt_cap: 49.5, ev: 0, pbv: 1.1, div_yield: 4.9, perf_3y: 18.5, perf_12m: 5.2, perf_6m: 2.1, perf_1m: 0.8, nii: 6.8, op_profit: 5.5, net_profit: 4.2, assets: 318, equity: 45.0, nii_g_3y: 8.1, net_profit_g_3y: 9.5, assets_g_3y: 7.2, segments: [{ name: "Investment Banking", value: 30 }, { name: "Corporate & Commercial", value: 45 }, { name: "Consumer Banking", value: 20 }, { name: "Other", value: 5 }], shareholders: [{ name: "Mubadala Investment Company", stake: 37.9 }, { name: "Members of the Abu Dhabi Ruling Family", stake: 15.1 }, { name: "Abu Dhabi Investment Council", stake: 5.9 }, { name: "Vanguard Group", stake: 2.1 }, { name: "BlackRock, Inc.", stake: 1.8 }] },
+            { name: "Emirates NBD (ENBD)", mkt_cap: 28.2, ev: 0, pbv: 1.0, div_yield: 4.1, perf_3y: 45.1, perf_12m: 15.3, perf_6m: 8.2, perf_1m: 3.1, nii: 6.5, op_profit: 5.1, net_profit: 3.9, assets: 235, equity: 28.2, nii_g_3y: 10.2, net_profit_g_3y: 12.8, assets_g_3y: 9.1, segments: [{ name: "Retail Banking & Wealth", value: 35 }, { name: "Corporate & Institutional", value: 40 }, { name: "Islamic Banking (EIB)", value: 15 }, { name: "Treasury & Other", value: 10 }], shareholders: [{ name: "Investment Corporation of Dubai", stake: 55.7 }, { name: "Sheikh Ahmed bin Saeed Al Maktoum", stake: 2.3 }, { name: "Vanguard Group", stake: 1.5 }, { name: "Norges Bank", stake: 1.2 }, { name: "BlackRock, Inc.", stake: 1.1 }] },
+            { name: "Abu Dhabi Commercial Bank (ADCB)", mkt_cap: 19.8, ev: 0, pbv: 0.9, div_yield: 5.5, perf_3y: 33.2, perf_12m: 10.1, perf_6m: 4.5, perf_1m: 1.5, nii: 3.8, op_profit: 2.9, net_profit: 2.0, assets: 145, equity: 22.0, nii_g_3y: 7.5, net_profit_g_3y: 11.2, assets_g_3y: 6.8, segments: [{ name: "Consumer Banking", value: 40 }, { name: "Wholesale Banking", value: 45 }, { name: "Treasury & Investments", value: 10 }, { name: "Property Management", value: 5 }], shareholders: [{ name: "Abu Dhabi Investment Council", stake: 60.2 }, { name: "Members of the Abu Dhabi Ruling Family", stake: 5.5 }, { name: "J.P. Morgan Chase & Co.", stake: 1.9 }, { name: "Vanguard Group", stake: 1.4 }, { name: "Norges Bank", stake: 1.0 }] },
+            { name: "Mashreq", mkt_cap: 8.5, ev: 0, pbv: 1.3, div_yield: 3.8, perf_3y: 155.6, perf_12m: 40.2, perf_6m: 22.1, perf_1m: 5.3, nii: 1.5, op_profit: 1.1, net_profit: 0.8, assets: 60, equity: 6.5, nii_g_3y: 15.1, net_profit_g_3y: 25.5, assets_g_3y: 10.5, segments: [{ name: "Corporate Finance", value: 38 }, { name: "Retail Banking", value: 32 }, { name: "International Banking", value: 20 }, { name: "Treasury", value: 10 }], shareholders: [{ name: "Al-Ghurair Group", stake: 49.8 }, { name: "Abdullah Ahmed Al Ghurair", stake: 10.1 }, { name: "Juma Al Majid Holding Group", stake: 7.3 }, { name: "Saeed Bin Ahmed Al Otaiba", stake: 5.2 }, { name: "Dimensional Fund Advisors", stake: 1.5 }] },
+            { name: "Abu Dhabi Islamic Bank (ADIB)", mkt_cap: 8.2, ev: 0, pbv: 1.2, div_yield: 6.2, perf_3y: 78.9, perf_12m: 25.3, perf_6m: 12.1, perf_1m: 2.8, nii: 1.9, op_profit: 1.4, net_profit: 1.1, assets: 48, equity: 6.8, nii_g_3y: 11.8, net_profit_g_3y: 18.9, assets_g_3y: 8.5, segments: [{ name: "Retail Banking", value: 45 }, { name: "Corporate Banking", value: 35 }, { name: "Treasury", value: 15 }, { name: "Real Estate", value: 5 }], shareholders: [{ name: "Abu Dhabi Investment Council", stake: 8.6 }, { name: "Members of the Abu Dhabi Ruling Family", stake: 7.6 }, { name: "Emirates International Investment Co.", stake: 6.7 }, { name: "Strategic Development Fund", stake: 5.1 }, { name: "The Vanguard Group", stake: 1.9 }] },
+            { name: "RAKBANK", mkt_cap: 2.9, ev: 0, pbv: 0.8, div_yield: 5.8, perf_3y: 25.4, perf_12m: 8.7, perf_6m: -1.2, perf_1m: -0.5, nii: 0.8, op_profit: 0.6, net_profit: 0.4, assets: 19, equity: 3.6, nii_g_3y: 6.5, net_profit_g_3y: 9.1, assets_g_3y: 5.3, segments: [{ name: "Personal Banking", value: 55 }, { name: "Business Banking", value: 30 }, { name: "Treasury", value: 10 }, { name: "Insurance", value: 5 }], shareholders: [{ name: "Government of Ras Al Khaimah", stake: 49.3 }, { name: "Sheikh Saud bin Saqr Al Qasimi", stake: 5.1 }, { name: "RAK Capital LLC", stake: 3.2 }, { name: "Al Nuaimi Group", stake: 2.8 }, { name: "GIBCA", stake: 1.9 }] },
+            { name: "Bank of Sharjah", mkt_cap: 1.1, ev: 0, pbv: 0.5, div_yield: 4.5, perf_3y: 15.1, perf_12m: 3.9, perf_6m: 1.0, perf_1m: 0.2, nii: 0.3, op_profit: 0.2, net_profit: 0.1, assets: 10, equity: 2.2, nii_g_3y: 4.2, net_profit_g_3y: 5.8, assets_g_3y: 3.1, segments: [{ name: "Corporate Banking", value: 60 }, { name: "Retail Banking", value: 25 }, { name: "Investment & Treasury", value: 15 }], shareholders: [{ name: "Government of Sharjah", stake: 19.9 }, { name: "Sharjah Asset Management", stake: 15.2 }, { name: "Emirates Investment Authority", stake: 8.1 }, { name: "Bank of Beirut s.a.l.", stake: 5.5 }, { name: "Sheikh Sultan bin Ahmed Al Qasimi", stake: 3.4 }] },
+            { name: "Commercial Bank International (CBI)", mkt_cap: 0.8, ev: 0, pbv: 0.6, div_yield: 3.5, perf_3y: 22.8, perf_12m: 11.5, perf_6m: 6.1, perf_1m: 1.9, nii: 0.25, op_profit: 0.18, net_profit: 0.1, assets: 7, equity: 1.3, nii_g_3y: 5.5, net_profit_g_3y: 7.2, assets_g_3y: 4.8, segments: [{ name: "Wholesale Banking", value: 50 }, { name: "Retail Banking", value: 40 }, { name: "Treasury", value: 10 }], shareholders: [{ name: "Qatar National Bank (QNB)", stake: 40.0 }, { name: "Government of Ras Al Khaimah", stake: 8.7 }, { name: "Mohamed Abdulrahman Al-Bahar", stake: 5.3 }, { name: "RAK Capital LLC", stake: 4.1 }, { name: "Al Mashriq Investment", stake: 3.0 }] },
+            { name: "Ajman Bank", mkt_cap: 0.7, ev: 0, pbv: 0.7, div_yield: 2.8, perf_3y: 55.3, perf_12m: 18.2, perf_6m: 9.8, perf_1m: 4.1, nii: 0.15, op_profit: 0.11, net_profit: 0.06, assets: 6, equity: 1.0, nii_g_3y: 12.5, net_profit_g_3y: 15.1, assets_g_3y: 9.8, segments: [{ name: "Consumer Banking", value: 48 }, { name: "Corporate Banking", value: 37 }, { name: "Treasury & Investment", value: 15 }], shareholders: [{ name: "Government of Ajman", stake: 25.0 }, { name: "Ajman Holding", stake: 10.2 }, { name: "Masar Investments", stake: 7.8 }, { name: "Sheikh Ammar bin Humaid Al Nuaimi", stake: 5.1 }, { name: "Al Hail Holding", stake: 4.3 }] }
+        ];
+
+        const brilliantBlues = ['#00487C', '#046E8F', '#0090C1', '#48ACF0', '#89CFF0', '#002741', '#02526c', '#0076a3'];
+        
+        const wrapLabel = (label, maxWidth) => {
+            if (label.length <= maxWidth) { return label; }
+            const words = label.split(' ');
+            let lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + ' ' + word).trim().length > maxWidth) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        };
+        
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) { return label.join(' '); }
+            return label;
+        };
+        
+        Chart.register(ChartDataLabels);
+        Chart.defaults.set('plugins.datalabels', {
+            color: '#ffffff',
+            font: {
+                weight: 'bold'
+            },
+        });
+
+        const barChartDefaultOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { title: tooltipTitleCallback } },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'end',
+                    formatter: (value) => value.toLocaleString(),
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { color: '#333' }, grid: { color: '#e0e0e0' } },
+                x: { ticks: { color: '#333' }, grid: { display: false } }
+            }
+        };
+
+        const horizontalBarChartDefaultOptions = {
+            ...barChartDefaultOptions,
+            indexAxis: 'y',
+            scales: {
+                x: { beginAtZero: true, ticks: { color: '#333' }, grid: { color: '#e0e0e0' } },
+                y: { ticks: { color: '#333' }, grid: { display: false } }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const createSortedChart = (canvasId, data, dataKey, label, options, unit = '') => {
+                const sortedData = [...data].sort((a, b) => b[dataKey] - a[dataKey]);
+                new Chart(document.getElementById(canvasId), {
+                    type: 'bar',
+                    data: {
+                        labels: sortedData.map(b => wrapLabel(b.name, 20)),
+                        datasets: [{
+                            label: label,
+                            data: sortedData.map(b => b[dataKey]),
+                            backgroundColor: brilliantBlues,
+                        }]
+                    },
+                    options: {
+                        ...options,
+                         plugins: {
+                            ...options.plugins,
+                            datalabels: {
+                                ...options.plugins.datalabels,
+                                formatter: (value) => value.toLocaleString() + unit
+                            }
+                        }
+                    }
+                });
+            };
+            
+            createSortedChart('marketCapChart', bankData, 'mkt_cap', 'Market Cap (USD Billions)', horizontalBarChartDefaultOptions, 'B');
+            createSortedChart('totalAssetsChart', bankData, 'assets', 'Total Assets (USD Billions)', horizontalBarChartDefaultOptions, 'B');
+            createSortedChart('pbvChart', bankData, 'pbv', 'P/B Ratio', barChartDefaultOptions, 'x');
+            createSortedChart('divYieldChart', bankData, 'div_yield', 'Dividend Yield (%)', barChartDefaultOptions, '%');
+            createSortedChart('niiGrowthChart', bankData, 'nii_g_3y', 'NII 3Y CAGR (%)', barChartDefaultOptions, '%');
+            createSortedChart('netProfitGrowthChart', bankData, 'net_profit_g_3y', 'Net Profit 3Y CAGR (%)', barChartDefaultOptions, '%');
+            createSortedChart('assetsGrowthChart', bankData, 'assets_g_3y', 'Assets 3Y CAGR (%)', barChartDefaultOptions, '%');
+
+
+            const profilesContainer = document.getElementById('bank-profiles');
+            bankData.forEach((bank, i) => {
+                const financialsHtml = `
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm mt-4 p-3 bg-gray-50 rounded-md">
+                        <span class="font-semibold text-gray-600">Market Cap:</span> <span class="text-right font-mono">${bank.mkt_cap.toFixed(1)}B</span>
+                        <span class="font-semibold text-gray-600">Total Assets:</span> <span class="text-right font-mono">${bank.assets.toFixed(1)}B</span>
+                        <span class="font-semibold text-gray-600">P/B Ratio:</span> <span class="text-right font-mono">${bank.pbv.toFixed(2)}x</span>
+                        <span class="font-semibold text-gray-600">Net Profit:</span> <span class="text-right font-mono">${bank.net_profit.toFixed(2)}B</span>
+                        <span class="font-semibold text-gray-600">NII:</span> <span class="text-right font-mono">${bank.nii.toFixed(2)}B</span>
+                        <span class="font-semibold text-gray-600">Total Equity:</span> <span class="text-right font-mono">${bank.equity.toFixed(2)}B</span>
+                    </div>
+                `;
+
+                const performanceHtml = `
+                    <div class="space-y-2 text-sm">
+                        ${[{label: '1M', value: bank.perf_1m}, {label: '6M', value: bank.perf_6m}, {label: '12M', value: bank.perf_12m}, {label: '3Y', value: bank.perf_3y}]
+                        .map(p => `
+                        <div class="flex items-center">
+                            <span class="w-12 font-medium">${p.label}</span>
+                            <div class="w-full bg-gray-200 rounded-full h-4 relative overflow-hidden"><div class="h-4 rounded-full ${p.value >= 0 ? 'bg-green-500' : 'bg-red-500'}" style="width: ${Math.min(Math.abs(p.value) / 1.6, 100)}%"></div></div>
+                            <span class="w-16 text-right font-semibold ${p.value >= 0 ? 'text-green-600' : 'text-red-600'}">${p.value.toFixed(1)}%</span>
+                        </div>
+                        `).join('')}
+                    </div>`;
+
+                const shareholdersHtml = `<ol class="list-decimal list-inside space-y-1 text-sm">${bank.shareholders.map(s => `<li><span class="font-semibold">${s.name}</span>: ${s.stake}%</li>`).join('')}</ol>`;
+
+                const profileCard = `
+                    <div class="bg-white rounded-lg shadow-md p-6 flex flex-col">
+                        <h3 class="text-xl font-bold text-[#00487C] mb-2">${bank.name}</h3>
+                        ${financialsHtml}
+                        <h4 class="font-semibold text-[#046E8F] mt-4 mb-2">Segment Breakdown</h4>
+                        <div class="chart-container h-64 max-h-64 mb-4">
+                           <canvas id="segmentChart-${i}"></canvas>
+                        </div>
+                        <h4 class="font-semibold text-[#046E8F] mt-4 mb-2">Share Price Performance</h4>
+                        ${performanceHtml}
+                        <h4 class="font-semibold text-[#046E8F] mt-6 mb-2">Top 5 Shareholders</h4>
+                        ${shareholdersHtml}
+                    </div>`;
+                profilesContainer.innerHTML += profileCard;
+            });
+            
+            bankData.forEach((bank, i) => {
+                new Chart(document.getElementById(`segmentChart-${i}`), {
+                    type: 'doughnut',
+                    data: {
+                        labels: bank.segments.map(s => s.name),
+                        datasets: [{
+                            data: bank.segments.map(s => s.value),
+                            backgroundColor: brilliantBlues,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { boxWidth: 12 }
+                            },
+                             tooltip: { callbacks: { title: tooltipTitleCallback } },
+                             datalabels: {
+                                 formatter: (value, ctx) => {
+                                     let sum = 0;
+                                     let dataArr = ctx.chart.data.datasets[0].data;
+                                     dataArr.map(data => { sum += data; });
+                                     let percentage = (value*100 / sum).toFixed(0)+"%";
+                                     return percentage;
+                                 },
+                                 color: '#fff',
+                             }
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
+
